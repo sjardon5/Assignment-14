@@ -112,30 +112,145 @@ footer {
 	}
 }
 
-/* the styles for the navigation menu */
+/* responsive navigation menus */
 .navbar {
+	container: navbar / inline-size;
+	position: relative;
+	z-index: 2;
 	background-color: var(--primary-color);
+
 	& ul {
 		list-style-type: none;
 		margin: 0;
 	}
+
 	& a {
 		display: block;
 		padding: .75em;
 		text-decoration: none;
 		color: var(--light);
 	}
+
 	& a.current {
 		color: var(--accent-color);
 		font-weight: bold;
 	}
-	& a.current:hover { 
+
+	& a.current:hover {
 		font-style: normal; /* override hover effect */
 	}
 }
 
+/* Keep the checkbox available to keyboard and assistive-technology users. */
+.navbar input[type="checkbox"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
+
+.menu-btn {
+	display: inline-block;
+	padding: .5em .75em;
+	color: var(--light);
+	font-size: 1.5rem;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.menu-btn::before {
+	content: "☰";
+}
+
+.navbar input[type="checkbox"]:checked + .menu-btn::before {
+	content: "×";
+}
+
+.navbar input[type="checkbox"]:focus-visible + .menu-btn {
+	outline: 2px solid var(--accent-color);
+	outline-offset: -2px;
+}
+
 .menu {
+	display: none;
+	flex-direction: column;
+	background-color: var(--primary-color);
+}
+
+.navbar input[type="checkbox"]:checked ~ .menu {
 	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-evenly;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+	z-index: 10;
+}
+
+.menu li {
+	position: relative;
+}
+
+/* Submenus are hidden until their parent item is hovered or focused. */
+.menu li > ul {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 100%;
+	min-width: 100%;
+	z-index: 11;
+	background-color: var(--primary-color);
+}
+
+.menu li:hover > ul,
+.menu li:focus-within > ul {
+	display: block;
+}
+
+.menu li:has(> ul) > a::after {
+	content: "";
+	display: inline-block;
+	margin-left: .6em;
+	vertical-align: middle;
+	border-top: .3em solid transparent;
+	border-bottom: .3em solid transparent;
+	border-left: .4em solid currentColor;
+}
+
+/* At wider navbar containers, show a horizontal menu with downward submenus. */
+@container navbar (min-width: 560px) {
+	.menu-btn {
+		display: none;
+	}
+
+	.menu {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+		position: static;
+		width: auto;
+	}
+
+	.navbar input[type="checkbox"]:checked ~ .menu {
+		display: flex;
+		position: static;
+		width: auto;
+	}
+
+	.menu li > ul {
+		top: 100%;
+		left: 0;
+	}
+
+	.menu li:has(> ul) > a::after {
+		border-top: .4em solid currentColor;
+		border-right: .3em solid transparent;
+		border-bottom: 0;
+		border-left: .3em solid transparent;
+	}
 }
